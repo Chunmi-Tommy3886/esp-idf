@@ -2650,6 +2650,8 @@
  */
 #define MBEDTLS_TLS_DEFAULT_ALLOW_SHA1_IN_KEY_EXCHANGE
 
+#define MBEDTLS_TLS_DEFAULT_ALLOW_SHA1_IN_CERTIFICATES
+
 /* \} name SECTION: Module configuration options */
 
 #if defined(TARGET_LIKE_MBED)

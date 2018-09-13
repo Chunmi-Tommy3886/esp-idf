@@ -396,6 +396,17 @@ ifndef IS_BOOTLOADER_BUILD
 include $(IDF_PATH)/make/project_config.mk
 endif
 
+
+# Insert MIIO_ADDON_LIST_LDFLAGS to COMPONENT_LDFLAGS
+OBJDUMP ?= $(call dequote,$(CONFIG_TOOLPREFIX))objdump
+MIIO_ADDON_LIST_LDFLAGS :=
+define makeMIIO_ADDON_LIST_LDFLAGS
+MIIO_ADDON_LIST_LDFLAGS += $(shell $(OBJDUMP) -t $(1) | sed -n -e 's/.*\(_miio_addon_list_.*\)/-u \1/p' | uniq | sort)
+endef
+define updateCOMPONENT_LDFLAGS
+COMPONENT_LDFLAGS += $(strip $(MIIO_ADDON_LIST_LDFLAGS))
+endef
+
 # ELF depends on the library archive files for COMPONENT_LIBRARIES
 # the rules to build these are emitted as part of GenerateComponentTarget below
 #
@@ -404,6 +415,8 @@ endif
 COMPONENT_LINKER_DEPS ?=
 $(APP_ELF): $(foreach libcomp,$(COMPONENT_LIBRARIES),$(BUILD_DIR_BASE)/$(libcomp)/lib$(libcomp).a) $(COMPONENT_LINKER_DEPS) $(COMPONENT_PROJECT_VARS)
 	$(summary) LD $(patsubst $(PWD)/%,%,$@)
+	$(foreach libcomp,$(COMPONENT_LIBRARIES),$(eval $(call makeMIIO_ADDON_LIST_LDFLAGS,$(BUILD_DIR_BASE)/$(libcomp)/lib$(libcomp).a)))
+	$(eval $(call updateCOMPONENT_LDFLAGS))
 	$(CC) $(LDFLAGS) -o $@ -Wl,-Map=$(APP_MAP)
 
 app: $(APP_BIN) partition_table_get_info

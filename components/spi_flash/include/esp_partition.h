@@ -76,6 +76,9 @@ typedef enum {
     ESP_PARTITION_SUBTYPE_DATA_FAT = 0x81,                                    //!< FAT partition
     ESP_PARTITION_SUBTYPE_DATA_SPIFFS = 0x82,                                 //!< SPIFFS partition
 
+    ESP_PARTITION_SUBTYPE_DATA_MIMCU = 0xfd,								//!< MIMCU partition
+    ESP_PARTITION_SUBTYPE_DATA_MINVS = 0xfe,								//!< MINVS partition
+
     ESP_PARTITION_SUBTYPE_ANY = 0xff,                                         //!< Used to search for partitions with any subtype
 } esp_partition_subtype_t;
 

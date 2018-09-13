@@ -137,8 +137,10 @@ esp_err_t esp_efuse_mac_get_default(uint8_t* mac)
                 return ESP_OK;
             }
         } else {
+#ifdef CONFIG_MAC_CHECK_ABORT
             ESP_LOGE(TAG, "Base MAC address from BLK0 of EFUSE CRC error, efuse_crc = 0x%02x; calc_crc = 0x%02x", efuse_crc, calc_crc);
             abort();
+#endif
         }
     }
     return ESP_OK;
